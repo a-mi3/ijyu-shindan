@@ -18,15 +18,75 @@ type DiagnosisResult = {
 };
 
 const questionImages = [
-  "/images/zenkei.jpg",
-  "/images/yamazakura.jpg",
-  "/images/hinamatsuri.jpg",
-  "/images/tomorokoshi.jpg",
-  "/images/jinja.jpg",
-  "/images/gion_kids.jpg",
-  "/images/furatto.jpg",
-  "/images/amebiki.jpg",
+  "/images/zenkei.jpg",       // Q1: 今どこに住んでいるか → 桜川市全景
+  "/images/yamazakura.jpg",   // Q2: いつ移住？ → 桜川の象徴・ヤマザクラ
+  "/images/camp.jpg",         // Q3: 理想の1日 → アウトドア暮らし
+  "/images/tomorokoshi.jpg",  // Q4: 仕事・活動 → 農業
+  "/images/yuubinkyoku.jpg",  // Q5: ゆずれない条件 → 地域の利便性
+  "/images/gion_kids.jpg",    // Q6: 家族構成 → 子どもたち
+  "/images/hinamatsuri.jpg",  // Q7: 住まいスタイル → 歴史的な町並み
+  "/images/amebiki.jpg",      // Q8: 体験したいこと → 雨引観音
 ];
+
+// 回答内容からエリア・テーマに合った画像を選ぶ
+function pickResultImages(answers: Record<string, string>) {
+  // タイトルカード: Q3の回答でメインビジュアルを決める
+  const heroMap: Record<string, string> = {
+    "畑仕事のあと、自分で育てた野菜で食卓を囲む": "/images/tomorokoshi.jpg",
+    "蔵の町並みを散歩して、カフェでひと息": "/images/hinamatsuri.jpg",
+    "子どもを広い公園で遊ばせて、のびのび過ごす": "/images/gion_kids.jpg",
+    "縁側でお茶を飲みながら、山を眺めてゆっくり": "/images/yamazakura.jpg",
+  };
+  const hero = heroMap[answers.q3] || "/images/zenkei.jpg";
+
+  // エリアカード: Q5の回答で使い分ける
+  const areaMap: Record<string, string> = {
+    "きれいな空気と自然が近いこと": "/images/yamazakura.jpg",
+    "ご近所さんと助け合える関係": "/images/gion.jpg",
+    "スーパーや病院が近くにあること": "/images/yuubinkyoku.jpg",
+    "人目を気にせず静かに暮らせること": "/images/zenkei.jpg",
+  };
+  const area = areaMap[answers.q5] || "/images/zenkei.jpg";
+
+  // 暮らし方: Q7の回答で住まいの雰囲気
+  const lifestyleMap: Record<string, string> = {
+    "古民家・歴史ある建物": "/images/hinamatsuri.jpg",
+    "新築・リノベ住宅": "/images/zenkei.jpg",
+    "まずは賃貸で様子見": "/images/furatto.jpg",
+    "二拠点居住": "/images/camp.jpg",
+  };
+  const lifestyle = lifestyleMap[answers.q7] || "/images/furatto.jpg";
+
+  // 仕事: Q4の回答に合わせる
+  const workMap: Record<string, string> = {
+    "リモートワーク継続": "/images/zenkei.jpg",
+    "地元で就職・転職": "/images/yuubinkyoku.jpg",
+    "農業・農的活動": "/images/kodomo_nouka.jpg",
+    "起業・副業・フリーランス": "/images/furatto.jpg",
+    "引退・年金生活": "/images/jinja.jpg",
+  };
+  const work = workMap[answers.q4] || "/images/tomorokoshi.jpg";
+
+  // 楽しみ方: Q8の回答に合わせる
+  const activityMap: Record<string, string> = {
+    "田植えや収穫体験、地元の食材で料理": "/images/yasai_taiken.jpg",
+    "真壁のひな祭りや蔵の町歩き": "/images/hinamatsuri.jpg",
+    "ヤマザクラの花見やつくし湖でアウトドア": "/images/camp.jpg",
+    "お祭りや地域行事で地元の人と交流": "/images/gion.jpg",
+  };
+  const activity = activityMap[answers.q8] || "/images/camp.jpg";
+
+  // 支援制度: 家族構成に合わせる
+  const supportMap: Record<string, string> = {
+    "単身": "/images/furatto.jpg",
+    "夫婦ふたりで": "/images/yamazakura.jpg",
+    "子どもと一緒に": "/images/randoseru.jpg",
+    "親と一緒に・呼び寄せ": "/images/amebiki.jpg",
+  };
+  const support = supportMap[answers.q6] || "/images/furatto.jpg";
+
+  return { hero, area, lifestyle, work, activity, support };
+}
 
 const questions = [
   {
@@ -97,21 +157,6 @@ const questions = [
   },
 ];
 
-const galleryImages = [
-  { src: "/images/yamazakura.jpg", alt: "ヤマザクラ" },
-  { src: "/images/amebiki.jpg", alt: "雨引観音" },
-  { src: "/images/hinamatsuri.jpg", alt: "真壁のひな祭り" },
-  { src: "/images/gion.jpg", alt: "祇園祭" },
-  { src: "/images/camp.jpg", alt: "キャンプ" },
-  { src: "/images/horsepark.jpg", alt: "ホースパーク" },
-  { src: "/images/kodomo_nouka.jpg", alt: "子どもと農家" },
-  { src: "/images/mikan.jpg", alt: "みかん狩り" },
-  { src: "/images/randoseru.jpg", alt: "ランドセル" },
-  { src: "/images/yasai_taiken.jpg", alt: "野菜体験" },
-  { src: "/images/gion_kids.jpg", alt: "祇園の子どもたち" },
-  { src: "/images/jinja.jpg", alt: "神社" },
-];
-
 export default function Home() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -160,6 +205,8 @@ export default function Home() {
     setError("");
   };
 
+  const images = pickResultImages(answers);
+
   return (
     <div
       className="min-h-screen"
@@ -171,17 +218,10 @@ export default function Home() {
         <header className="text-center mb-10">
           <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-5 shadow-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/images/yamazakura.jpg"
-              alt="桜川市のヤマザクラ"
-              className="w-full h-full object-cover"
-            />
+            <img src="/images/yamazakura.jpg" alt="桜川市のヤマザクラ" className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-5 text-white text-left">
-              <div
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-2"
-                style={{ backgroundColor: "#1D9E75" }}
-              >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-2" style={{ backgroundColor: "#1D9E75" }}>
                 🌸 茨城県桜川市
               </div>
               <h1 className="text-2xl font-bold">移住スタイル診断</h1>
@@ -197,12 +237,9 @@ export default function Home() {
           <div className="text-center py-16">
             <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-6 shadow-lg">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/zenkei.jpg" alt="桜川市の風景" className="w-full h-full object-cover" />
+              <img src={images.hero} alt="桜川市の風景" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-white/40 flex items-center justify-center">
-                <div
-                  className="w-14 h-14 border-4 rounded-full animate-spin"
-                  style={{ borderColor: "#c8e6c9", borderTopColor: "#1D9E75" }}
-                />
+                <div className="w-14 h-14 border-4 rounded-full animate-spin" style={{ borderColor: "#c8e6c9", borderTopColor: "#1D9E75" }} />
               </div>
             </div>
             <p className="text-gray-600 text-lg font-medium">AIがあなたの移住スタイルを診断中...</p>
@@ -215,12 +252,7 @@ export default function Home() {
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="relative w-full h-36">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                key={step}
-                src={questionImages[step]}
-                alt="桜川市の風景"
-                className="w-full h-full object-cover"
-              />
+              <img key={step} src={questionImages[step]} alt="桜川市の風景" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
             </div>
 
@@ -233,17 +265,12 @@ export default function Home() {
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div
                     className="h-2 rounded-full transition-all duration-500 ease-out"
-                    style={{
-                      width: `${((step + 1) / questions.length) * 100}%`,
-                      backgroundColor: "#1D9E75",
-                    }}
+                    style={{ width: `${((step + 1) / questions.length) * 100}%`, backgroundColor: "#1D9E75" }}
                   />
                 </div>
               </div>
 
-              <h2 className="text-lg font-bold text-gray-800 mb-5">
-                {questions[step].label}
-              </h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-5">{questions[step].label}</h2>
 
               <div className="grid gap-2.5">
                 {questions[step].options.map((option) => (
@@ -258,10 +285,7 @@ export default function Home() {
               </div>
 
               {step > 0 && (
-                <button
-                  onClick={() => setStep(step - 1)}
-                  className="mt-5 text-sm text-gray-400 hover:text-gray-600 transition"
-                >
+                <button onClick={() => setStep(step - 1)} className="mt-5 text-sm text-gray-400 hover:text-gray-600 transition">
                   ← 前の質問に戻る
                 </button>
               )}
@@ -273,11 +297,7 @@ export default function Home() {
         {error && (
           <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
             <p className="text-red-500 mb-4">{error}</p>
-            <button
-              onClick={reset}
-              className="px-6 py-3 text-white rounded-full font-medium hover:opacity-90 transition"
-              style={{ backgroundColor: "#1D9E75" }}
-            >
+            <button onClick={reset} className="px-6 py-3 text-white rounded-full font-medium hover:opacity-90 transition" style={{ backgroundColor: "#1D9E75" }}>
               もう一度診断する
             </button>
           </div>
@@ -286,12 +306,12 @@ export default function Home() {
         {/* Result */}
         {result && (
           <div>
-            {/* Title card */}
+            {/* Title card — hero image matches Q3 answer */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-5">
               <div className="relative w-full h-52">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/zenkei.jpg" alt="桜川市全景" className="w-full h-full object-cover" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(29,158,117,0.7), rgba(29,158,117,0.9))" }} />
+                <img src={images.hero} alt="あなたの移住スタイル" className="w-full h-full object-cover" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(29,158,117,0.6), rgba(29,158,117,0.9))" }} />
                 <div className="absolute inset-0 flex flex-col items-center justify-center px-7 text-white">
                   <p className="text-sm opacity-80 mb-1">あなたの移住スタイルは…</p>
                   <h2 className="text-2xl font-bold mb-3">{result.title}</h2>
@@ -312,32 +332,29 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Photo gallery */}
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              {galleryImages.slice(0, 6).map((img, i) => (
-                <div key={i} className="relative h-24 rounded-xl overflow-hidden shadow">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-                </div>
-              ))}
-            </div>
-
-            {/* Detail cards */}
+            {/* Detail cards — each image chosen by answers */}
             <div className="grid gap-4">
-              <ResultCard icon="📍" title="おすすめエリア" content={result.area} image="/images/hinamatsuri.jpg" />
-              <ResultCard icon="🏠" title="暮らし方" content={result.lifestyle} image="/images/yuubinkyoku.jpg" />
-              <ResultCard icon="💼" title="仕事・活動" content={result.work} image="/images/tomorokoshi.jpg" />
-              <ResultCard icon="🎯" title="地域での楽しみ方" content={result.activity} image="/images/camp.jpg" />
+              <ResultCard icon="📍" title="おすすめエリア" content={result.area} image={images.area} />
+              <ResultCard icon="🏠" title="暮らし方" content={result.lifestyle} image={images.lifestyle} />
+              <ResultCard icon="💼" title="仕事・活動" content={result.work} image={images.work} />
+              <ResultCard icon="🎯" title="地域での楽しみ方" content={result.activity} image={images.activity} />
 
-              {/* Support */}
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">🎁 おすすめ支援制度</h3>
-                <div className="space-y-3">
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <p className="text-sm text-gray-700">{result.support1}</p>
-                  </div>
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <p className="text-sm text-gray-700">{result.support2}</p>
+              {/* Support — image matches family situation */}
+              <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                <div className="relative w-full h-28">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={images.support} alt="支援制度" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
+                </div>
+                <div className="p-6 -mt-3 relative">
+                  <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">🎁 おすすめ支援制度</h3>
+                  <div className="space-y-3">
+                    <div className="bg-green-50 rounded-xl p-4">
+                      <p className="text-sm text-gray-700">{result.support1}</p>
+                    </div>
+                    <div className="bg-green-50 rounded-xl p-4">
+                      <p className="text-sm text-gray-700">{result.support2}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -353,16 +370,6 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-              </div>
-
-              {/* More photos */}
-              <div className="grid grid-cols-3 gap-2">
-                {galleryImages.slice(6, 12).map((img, i) => (
-                  <div key={i} className="relative h-24 rounded-xl overflow-hidden shadow">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-                  </div>
-                ))}
               </div>
 
               {/* Furato message */}
