@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 
 type DiagnosisResult = {
   title: string;
@@ -23,10 +22,10 @@ const questionImages = [
   "/images/yamazakura.jpg",
   "/images/hinamatsuri.jpg",
   "/images/tomorokoshi.jpg",
-  "/images/yuubinkyoku.jpg",
+  "/images/jinja.jpg",
   "/images/gion_kids.jpg",
   "/images/furatto.jpg",
-  "/images/jinja.jpg",
+  "/images/amebiki.jpg",
 ];
 
 const questions = [
@@ -42,12 +41,12 @@ const questions = [
   },
   {
     key: "q3",
-    label: "桜川市でどんな暮らしがしたいですか？",
+    label: "理想の1日を想像してみてください。どれが近いですか？",
     options: [
-      "農的・自給自足的な暮らし",
-      "古民家・文化財に囲まれた暮らし",
-      "子育てしやすい静かな暮らし",
-      "セカンドライフ・のんびり暮らし",
+      "畑仕事のあと、自分で育てた野菜で食卓を囲む",
+      "蔵の町並みを散歩して、カフェでひと息",
+      "子どもを広い公園で遊ばせて、のびのび過ごす",
+      "縁側でお茶を飲みながら、山を眺めてゆっくり",
     ],
   },
   {
@@ -63,12 +62,12 @@ const questions = [
   },
   {
     key: "q5",
-    label: "暮らしで最も重視することは？",
+    label: "住む場所を選ぶとき、一番ゆずれない条件は？",
     options: [
-      "自然・緑・空気",
-      "地域コミュニティとのつながり",
-      "生活の利便性",
-      "静けさ・プライバシー",
+      "きれいな空気と自然が近いこと",
+      "ご近所さんと助け合える関係",
+      "スーパーや病院が近くにあること",
+      "人目を気にせず静かに暮らせること",
     ],
   },
   {
@@ -88,29 +87,29 @@ const questions = [
   },
   {
     key: "q8",
-    label: "桜川市に期待することは何ですか？",
+    label: "桜川市で「これは体験してみたい！」と思うのは？",
     options: [
-      "のびのびした子育て環境",
-      "歴史・文化・アート",
-      "農業・食・自然体験",
-      "人とのつながり・コミュニティ",
+      "田植えや収穫体験、地元の食材で料理",
+      "真壁のひな祭りや蔵の町歩き",
+      "ヤマザクラの花見やつくし湖でアウトドア",
+      "お祭りや地域行事で地元の人と交流",
     ],
   },
 ];
 
-const resultImages = [
+const galleryImages = [
   { src: "/images/yamazakura.jpg", alt: "ヤマザクラ" },
   { src: "/images/amebiki.jpg", alt: "雨引観音" },
   { src: "/images/hinamatsuri.jpg", alt: "真壁のひな祭り" },
-  { src: "/images/tomorokoshi.jpg", alt: "トウモロコシ収穫" },
-  { src: "/images/camp.jpg", alt: "キャンプ" },
   { src: "/images/gion.jpg", alt: "祇園祭" },
+  { src: "/images/camp.jpg", alt: "キャンプ" },
   { src: "/images/horsepark.jpg", alt: "ホースパーク" },
   { src: "/images/kodomo_nouka.jpg", alt: "子どもと農家" },
   { src: "/images/mikan.jpg", alt: "みかん狩り" },
   { src: "/images/randoseru.jpg", alt: "ランドセル" },
   { src: "/images/yasai_taiken.jpg", alt: "野菜体験" },
   { src: "/images/gion_kids.jpg", alt: "祇園の子どもたち" },
+  { src: "/images/jinja.jpg", alt: "神社" },
 ];
 
 export default function Home() {
@@ -161,28 +160,21 @@ export default function Home() {
     setError("");
   };
 
-  const handleBack = () => {
-    if (step > 0) setStep(step - 1);
-  };
-
   return (
     <div
       className="min-h-screen"
-      style={{
-        background:
-          "linear-gradient(135deg, #e8f5e9 0%, #e0f2f1 50%, #f1f8e9 100%)",
-      }}
+      style={{ background: "linear-gradient(135deg, #e8f5e9 0%, #e0f2f1 50%, #f1f8e9 100%)" }}
     >
       <div className="max-w-xl mx-auto px-4 py-10">
-        {/* Header with hero image */}
+
+        {/* Header */}
         <header className="text-center mb-10">
           <div className="relative w-full h-48 rounded-2xl overflow-hidden mb-5 shadow-lg">
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/images/yamazakura.jpg"
               alt="桜川市のヤマザクラ"
-              fill
-              className="object-cover"
-              priority
+              className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-5 text-white text-left">
@@ -204,25 +196,16 @@ export default function Home() {
         {loading && (
           <div className="text-center py-16">
             <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-6 shadow-lg">
-              <Image
-                src="/images/zenkei.jpg"
-                alt="桜川市の風景"
-                fill
-                className="object-cover"
-              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/images/zenkei.jpg" alt="桜川市の風景" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-white/40 flex items-center justify-center">
                 <div
                   className="w-14 h-14 border-4 rounded-full animate-spin"
-                  style={{
-                    borderColor: "#c8e6c9",
-                    borderTopColor: "#1D9E75",
-                  }}
+                  style={{ borderColor: "#c8e6c9", borderTopColor: "#1D9E75" }}
                 />
               </div>
             </div>
-            <p className="text-gray-600 text-lg font-medium">
-              AIがあなたの移住スタイルを診断中...
-            </p>
+            <p className="text-gray-600 text-lg font-medium">AIがあなたの移住スタイルを診断中...</p>
             <p className="mt-1 text-gray-400 text-sm">少々お待ちください</p>
           </div>
         )}
@@ -231,25 +214,21 @@ export default function Home() {
         {!loading && !result && !error && (
           <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
             <div className="relative w-full h-36">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={step}
                 src={questionImages[step]}
                 alt="桜川市の風景"
-                fill
-                className="object-cover transition-opacity duration-500"
+                className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
             </div>
 
             <div className="p-7 -mt-4 relative">
-              {/* Progress */}
               <div className="mb-6">
                 <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-                  <span>
-                    質問 {step + 1} / {questions.length}
-                  </span>
-                  <span>
-                    {Math.round(((step + 1) / questions.length) * 100)}%
-                  </span>
+                  <span>質問 {step + 1} / {questions.length}</span>
+                  <span>{Math.round(((step + 1) / questions.length) * 100)}%</span>
                 </div>
                 <div className="w-full bg-gray-100 rounded-full h-2">
                   <div
@@ -270,18 +249,8 @@ export default function Home() {
                 {questions[step].options.map((option) => (
                   <button
                     key={option}
-                    onClick={() =>
-                      handleSelect(questions[step].key, option)
-                    }
-                    className="w-full text-left px-5 py-3.5 rounded-xl border-2 border-gray-100 hover:shadow-md transition-all text-gray-700 text-sm font-medium"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#1D9E75";
-                      e.currentTarget.style.backgroundColor = "#f0faf6";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#f3f4f6";
-                      e.currentTarget.style.backgroundColor = "white";
-                    }}
+                    onClick={() => handleSelect(questions[step].key, option)}
+                    className="w-full text-left px-5 py-3.5 rounded-xl border-2 border-gray-100 hover:border-[#1D9E75] hover:bg-[#f0faf6] hover:shadow-md transition-all text-gray-700 text-sm font-medium"
                   >
                     {option}
                   </button>
@@ -290,7 +259,7 @@ export default function Home() {
 
               {step > 0 && (
                 <button
-                  onClick={handleBack}
+                  onClick={() => setStep(step - 1)}
                   className="mt-5 text-sm text-gray-400 hover:text-gray-600 transition"
                 >
                   ← 前の質問に戻る
@@ -317,28 +286,14 @@ export default function Home() {
         {/* Result */}
         {result && (
           <div>
-            {/* Type title card with image */}
+            {/* Title card */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-5">
-              <div className="relative text-center text-white">
-                <div className="relative w-full h-52">
-                  <Image
-                    src="/images/zenkei.jpg"
-                    alt="桜川市全景"
-                    fill
-                    className="object-cover"
-                  />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, rgba(29,158,117,0.7), rgba(29,158,117,0.9))",
-                    }}
-                  />
-                </div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center px-7">
-                  <p className="text-sm opacity-80 mb-1">
-                    あなたの移住スタイルは…
-                  </p>
+              <div className="relative w-full h-52">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/zenkei.jpg" alt="桜川市全景" className="w-full h-full object-cover" />
+                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(29,158,117,0.7), rgba(29,158,117,0.9))" }} />
+                <div className="absolute inset-0 flex flex-col items-center justify-center px-7 text-white">
+                  <p className="text-sm opacity-80 mb-1">あなたの移住スタイルは…</p>
                   <h2 className="text-2xl font-bold mb-3">{result.title}</h2>
                   <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-4 py-1 text-sm font-medium">
                     桜川市マッチ度 {result.score}
@@ -346,20 +301,11 @@ export default function Home() {
                 </div>
               </div>
               <div className="px-7 py-5">
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {result.concept}
-                </p>
+                <p className="text-gray-600 text-sm leading-relaxed">{result.concept}</p>
               </div>
               <div className="px-7 pb-5 flex flex-wrap gap-2">
                 {result.tags.map((tag, i) => (
-                  <span
-                    key={i}
-                    className="text-xs font-medium px-3 py-1 rounded-full"
-                    style={{
-                      backgroundColor: "#e8f5e9",
-                      color: "#1D9E75",
-                    }}
-                  >
+                  <span key={i} className="text-xs font-medium px-3 py-1 rounded-full" style={{ backgroundColor: "#e8f5e9", color: "#1D9E75" }}>
                     #{tag}
                   </span>
                 ))}
@@ -368,57 +314,24 @@ export default function Home() {
 
             {/* Photo gallery */}
             <div className="grid grid-cols-3 gap-2 mb-5">
-              {resultImages.slice(0, 6).map((img, i) => (
-                <div
-                  key={i}
-                  className="relative h-24 rounded-xl overflow-hidden shadow"
-                >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    fill
-                    className="object-cover"
-                  />
+              {galleryImages.slice(0, 6).map((img, i) => (
+                <div key={i} className="relative h-24 rounded-xl overflow-hidden shadow">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
 
-            {/* Detail cards with images */}
+            {/* Detail cards */}
             <div className="grid gap-4">
-              <DetailCardWithImage
-                icon="📍"
-                title="おすすめエリア"
-                content={result.area}
-                imageSrc="/images/hinamatsuri.jpg"
-                imageAlt="真壁のひな祭り"
-              />
-              <DetailCardWithImage
-                icon="🏠"
-                title="暮らし方"
-                content={result.lifestyle}
-                imageSrc="/images/furatto.jpg"
-                imageAlt="ふらっと"
-              />
-              <DetailCardWithImage
-                icon="💼"
-                title="仕事・活動"
-                content={result.work}
-                imageSrc="/images/tomorokoshi.jpg"
-                imageAlt="農業体験"
-              />
-              <DetailCardWithImage
-                icon="🎯"
-                title="地域での楽しみ方"
-                content={result.activity}
-                imageSrc="/images/camp.jpg"
-                imageAlt="キャンプ"
-              />
+              <ResultCard icon="📍" title="おすすめエリア" content={result.area} image="/images/hinamatsuri.jpg" />
+              <ResultCard icon="🏠" title="暮らし方" content={result.lifestyle} image="/images/yuubinkyoku.jpg" />
+              <ResultCard icon="💼" title="仕事・活動" content={result.work} image="/images/tomorokoshi.jpg" />
+              <ResultCard icon="🎯" title="地域での楽しみ方" content={result.activity} image="/images/camp.jpg" />
 
               {/* Support */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                  🎁 おすすめ支援制度
-                </h3>
+                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">🎁 おすすめ支援制度</h3>
                 <div className="space-y-3">
                   <div className="bg-green-50 rounded-xl p-4">
                     <p className="text-sm text-gray-700">{result.support1}</p>
@@ -431,21 +344,11 @@ export default function Home() {
 
               {/* Reasons */}
               <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">
-                  ✨ 桜川市をおすすめする理由
-                </h3>
+                <h3 className="text-sm font-bold text-gray-800 mb-3 flex items-center gap-2">✨ 桜川市をおすすめする理由</h3>
                 <ul className="space-y-2.5">
                   {result.reasons.map((reason, i) => (
-                    <li
-                      key={i}
-                      className="flex gap-2.5 text-sm text-gray-600"
-                    >
-                      <span
-                        className="flex-shrink-0 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center font-bold"
-                        style={{ backgroundColor: "#1D9E75" }}
-                      >
-                        {i + 1}
-                      </span>
+                    <li key={i} className="flex gap-2.5 text-sm text-gray-600">
+                      <span className="flex-shrink-0 w-5 h-5 rounded-full text-white text-xs flex items-center justify-center font-bold" style={{ backgroundColor: "#1D9E75" }}>{i + 1}</span>
                       {reason}
                     </li>
                   ))}
@@ -454,51 +357,24 @@ export default function Home() {
 
               {/* More photos */}
               <div className="grid grid-cols-3 gap-2">
-                {resultImages.slice(6, 12).map((img, i) => (
-                  <div
-                    key={i}
-                    className="relative h-24 rounded-xl overflow-hidden shadow"
-                  >
-                    <Image
-                      src={img.src}
-                      alt={img.alt}
-                      fill
-                      className="object-cover"
-                    />
+                {galleryImages.slice(6, 12).map((img, i) => (
+                  <div key={i} className="relative h-24 rounded-xl overflow-hidden shadow">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
 
-              {/* Furato message with image */}
-              <div
-                className="rounded-2xl shadow-lg overflow-hidden border-2"
-                style={{ borderColor: "#1D9E75" }}
-              >
+              {/* Furato message */}
+              <div className="rounded-2xl shadow-lg overflow-hidden border-2" style={{ borderColor: "#1D9E75" }}>
                 <div className="relative w-full h-32">
-                  <Image
-                    src="/images/furatto.jpg"
-                    alt="ふらっと"
-                    fill
-                    className="object-cover"
-                  />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to bottom, transparent 30%, #f0faf6 100%)",
-                    }}
-                  />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/images/furatto.jpg" alt="ふらっと" className="w-full h-full object-cover" />
+                  <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, #f0faf6 100%)" }} />
                 </div>
                 <div className="p-6 -mt-4 relative" style={{ backgroundColor: "#f0faf6" }}>
-                  <h3
-                    className="text-sm font-bold mb-2 flex items-center gap-2"
-                    style={{ color: "#1D9E75" }}
-                  >
-                    💬 「ふらっと」からのメッセージ
-                  </h3>
-                  <p className="text-sm text-gray-700 leading-relaxed">
-                    {result.furato_message}
-                  </p>
+                  <h3 className="text-sm font-bold mb-2 flex items-center gap-2" style={{ color: "#1D9E75" }}>💬 「ふらっと」からのメッセージ</h3>
+                  <p className="text-sm text-gray-700 leading-relaxed">{result.furato_message}</p>
                 </div>
               </div>
             </div>
@@ -516,14 +392,8 @@ export default function Home() {
               </a>
               <button
                 onClick={reset}
-                className="w-full py-3 rounded-full border-2 font-medium text-sm transition"
+                className="w-full py-3 rounded-full border-2 font-medium text-sm hover:bg-[#f0faf6] transition"
                 style={{ borderColor: "#1D9E75", color: "#1D9E75" }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f0faf6";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
               >
                 もう一度診断する
               </button>
@@ -531,7 +401,6 @@ export default function Home() {
           </div>
         )}
 
-        {/* Footer */}
         <footer className="text-center mt-12 text-xs text-gray-400">
           <p>桜川市移住スタイル診断 — AI による診断結果はあくまで参考です</p>
         </footer>
@@ -540,29 +409,16 @@ export default function Home() {
   );
 }
 
-function DetailCardWithImage({
-  icon,
-  title,
-  content,
-  imageSrc,
-  imageAlt,
-}: {
-  icon: string;
-  title: string;
-  content: string;
-  imageSrc: string;
-  imageAlt: string;
-}) {
+function ResultCard({ icon, title, content, image }: { icon: string; title: string; content: string; image: string }) {
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
       <div className="relative w-full h-32">
-        <Image src={imageSrc} alt={imageAlt} fill className="object-cover" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={image} alt={title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
       </div>
       <div className="p-6 -mt-3 relative">
-        <h3 className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">
-          {icon} {title}
-        </h3>
+        <h3 className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">{icon} {title}</h3>
         <p className="text-sm text-gray-600 leading-relaxed">{content}</p>
       </div>
     </div>
