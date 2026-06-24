@@ -433,7 +433,7 @@ const loadingSlides = [
   { src: "/images/sakuragawa_medical.jpg", caption: "さくらがわ地域医療センター — 安心の医療環境" },
   { src: "/images/tomorokoshi.jpg", caption: "採れたて野菜が食卓に届く暮らし" },
   { src: "/images/furatto.jpg", caption: "移住相談拠点「ふらっと」" },
-  { src: "/images/amebiki.jpg", caption: "安産・子育ての名刹 雨引観音" },
+  { src: "/images/amebiki.jpg", caption: "安産・子育てで有名な雨引観音" },
 ];
 
 const loadingMessages = [
