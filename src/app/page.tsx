@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type DiagnosisResult = {
   title: string;
@@ -232,20 +232,8 @@ export default function Home() {
           </p>
         </header>
 
-        {/* Loading */}
-        {loading && (
-          <div className="text-center py-16">
-            <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-6 shadow-lg">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={images.hero} alt="桜川市の風景" className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-white/40 flex items-center justify-center">
-                <div className="w-14 h-14 border-4 rounded-full animate-spin" style={{ borderColor: "#c8e6c9", borderTopColor: "#1D9E75" }} />
-              </div>
-            </div>
-            <p className="text-gray-600 text-lg font-medium">AIがあなたの移住スタイルを診断中...</p>
-            <p className="mt-1 text-gray-400 text-sm">少々お待ちください</p>
-          </div>
-        )}
+        {/* Loading — slideshow */}
+        {loading && <LoadingSlideshow />}
 
         {/* Questions */}
         {!loading && !result && !error && (
@@ -412,6 +400,81 @@ export default function Home() {
           <p>桜川市移住スタイル診断 — AI による診断結果はあくまで参考です</p>
         </footer>
       </div>
+    </div>
+  );
+}
+
+const loadingSlides = [
+  { src: "/images/yamazakura.jpg", caption: "日本有数のヤマザクラの名所" },
+  { src: "/images/hinamatsuri.jpg", caption: "真壁のひな祭り — 蔵の町並みが華やぐ" },
+  { src: "/images/camp.jpg", caption: "自然の中でアウトドアを満喫" },
+  { src: "/images/gion.jpg", caption: "地域のお祭りで人と人がつながる" },
+  { src: "/images/tomorokoshi.jpg", caption: "採れたて野菜が食卓に届く暮らし" },
+  { src: "/images/furatto.jpg", caption: "移住相談拠点「ふらっと」" },
+  { src: "/images/amebiki.jpg", caption: "安産・子育ての名刹 雨引観音" },
+  { src: "/images/horsepark.jpg", caption: "桜川市の豊かな自然環境" },
+];
+
+const loadingMessages = [
+  "AIがあなたの回答を分析中...",
+  "桜川市のエリアを照合中...",
+  "ぴったりの支援制度を探しています...",
+  "あなたの移住スタイルを診断中...",
+];
+
+function LoadingSlideshow() {
+  const [index, setIndex] = useState(0);
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % loadingSlides.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setMsgIndex((prev) => (prev + 1) % loadingMessages.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="text-center py-8">
+      <div className="relative w-full h-56 rounded-2xl overflow-hidden mb-6 shadow-lg">
+        {loadingSlides.map((slide, i) => (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            key={slide.src}
+            src={slide.src}
+            alt={slide.caption}
+            className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+            style={{ opacity: i === index ? 1 : 0 }}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <p className="text-white text-sm font-medium">{loadingSlides[index].caption}</p>
+        </div>
+        <div className="absolute top-4 right-4">
+          <div className="w-10 h-10 border-3 rounded-full animate-spin" style={{ borderColor: "rgba(255,255,255,0.3)", borderTopColor: "#fff" }} />
+        </div>
+      </div>
+      <div className="flex justify-center gap-1.5 mb-5">
+        {loadingSlides.map((_, i) => (
+          <div
+            key={i}
+            className="h-1.5 rounded-full transition-all duration-500"
+            style={{
+              width: i === index ? "20px" : "6px",
+              backgroundColor: i === index ? "#1D9E75" : "#d1d5db",
+            }}
+          />
+        ))}
+      </div>
+      <p className="text-gray-600 text-lg font-medium transition-opacity duration-500">{loadingMessages[msgIndex]}</p>
+      <p className="mt-1 text-gray-400 text-sm">少々お待ちください</p>
     </div>
   );
 }
