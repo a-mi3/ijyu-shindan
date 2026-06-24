@@ -182,6 +182,7 @@ export default function Home() {
   const [result, setResult] = useState<DiagnosisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [shared, setShared] = useState(false);
 
   const handleSelect = (key: string, value: string) => {
     const updated = { ...answers, [key]: value };
@@ -222,6 +223,25 @@ export default function Home() {
     setAnswers({});
     setResult(null);
     setError("");
+    setShared(false);
+  };
+
+  const shareResult = async () => {
+    if (!result) return;
+    const text = `【桜川市 移住スタイル診断】\n私の移住スタイルは「${result.title}」でした！\n桜川市マッチ度: ${result.score}\n\n${result.concept}\n\nあなたも診断してみませんか？`;
+    const url = "https://ijyu-shindan.vercel.app";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: `移住スタイル診断：${result.title}`, text, url });
+      } catch {
+        // user cancelled
+      }
+    } else {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    }
   };
 
   const images = pickResultImages(answers, result);
@@ -405,9 +425,15 @@ export default function Home() {
                 🌸 ふらっとに相談する
               </a>
               <button
-                onClick={reset}
+                onClick={shareResult}
                 className="w-full py-3 rounded-full border-2 font-medium text-sm hover:bg-[#f0faf6] transition"
                 style={{ borderColor: "#1D9E75", color: "#1D9E75" }}
+              >
+                {shared ? "✅ コピーしました！" : "📤 診断結果を共有する"}
+              </button>
+              <button
+                onClick={reset}
+                className="w-full py-3 rounded-full border-2 font-medium text-sm hover:bg-gray-50 transition border-gray-300 text-gray-500"
               >
                 もう一度診断する
               </button>
