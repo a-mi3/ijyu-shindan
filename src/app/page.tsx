@@ -43,7 +43,7 @@ function pickResultImages(answers: Record<string, string>) {
   const areaMap: Record<string, string> = {
     "きれいな空気と自然が近いこと": "/images/yamazakura.jpg",
     "ご近所さんと助け合える関係": "/images/gion.jpg",
-    "スーパーや病院が近くにあること": "/images/yuubinkyoku.jpg",
+    "スーパーや病院が近くにあること": "/images/route50_iwase.jpg",
     "人目を気にせず静かに暮らせること": "/images/zenkei.jpg",
   };
   const area = areaMap[answers.q5] || "/images/zenkei.jpg";
@@ -80,7 +80,7 @@ function pickResultImages(answers: Record<string, string>) {
   const supportMap: Record<string, string> = {
     "単身": "/images/furatto.jpg",
     "夫婦ふたりで": "/images/yamazakura.jpg",
-    "子どもと一緒に": "/images/randoseru.jpg",
+    "子どもと一緒に": "/images/yamato_park.jpg",
     "親と一緒に・呼び寄せ": "/images/amebiki.jpg",
   };
   const support = supportMap[answers.q6] || "/images/furatto.jpg";
@@ -407,12 +407,14 @@ export default function Home() {
 const loadingSlides = [
   { src: "/images/yamazakura.jpg", caption: "日本有数のヤマザクラの名所" },
   { src: "/images/hinamatsuri.jpg", caption: "真壁のひな祭り — 蔵の町並みが華やぐ" },
+  { src: "/images/route50_iwase.jpg", caption: "国道50号沿い — 岩瀬エリアの暮らしやすさ" },
   { src: "/images/camp.jpg", caption: "自然の中でアウトドアを満喫" },
+  { src: "/images/yamato_park.jpg", caption: "大和駅北公園 — 子どもがのびのび遊べる" },
   { src: "/images/gion.jpg", caption: "地域のお祭りで人と人がつながる" },
+  { src: "/images/sakuragawa_medical.jpg", caption: "さくらがわ地域医療センター — 安心の医療環境" },
   { src: "/images/tomorokoshi.jpg", caption: "採れたて野菜が食卓に届く暮らし" },
   { src: "/images/furatto.jpg", caption: "移住相談拠点「ふらっと」" },
   { src: "/images/amebiki.jpg", caption: "安産・子育ての名刹 雨引観音" },
-  { src: "/images/horsepark.jpg", caption: "桜川市の豊かな自然環境" },
 ];
 
 const loadingMessages = [
