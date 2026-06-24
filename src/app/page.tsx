@@ -229,7 +229,7 @@ export default function Home() {
   const shareResult = async () => {
     if (!result) return;
     const text = `【桜川市 移住スタイル診断】\n私の移住スタイルは「${result.title}」でした！\n桜川市マッチ度: ${result.score}\n\n${result.concept}\n\nあなたも診断してみませんか？`;
-    const url = "https://ijyu-shindan.vercel.app";
+    const url = "https://ijyu.see-en.net";
 
     if (navigator.share) {
       try {
