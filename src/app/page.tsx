@@ -28,9 +28,27 @@ const questionImages = [
   "/images/amebiki.jpg",      // Q8: 体験したいこと → 雨引観音
 ];
 
-// 回答内容からエリア・テーマに合った画像を選ぶ
-function pickResultImages(answers: Record<string, string>) {
-  // タイトルカード: Q3の回答でメインビジュアルを決める
+// 診断結果のテキストからエリアを判定して画像を選ぶ
+function pickAreaImage(areaText: string): string {
+  if (areaText.includes("真壁")) return "/images/hinamatsuri.jpg";
+  if (areaText.includes("岩瀬")) return "/images/route50_iwase.jpg";
+  if (areaText.includes("大和")) return "/images/yamato_park.jpg";
+  return "/images/zenkei.jpg";
+}
+
+// 重複を避けて画像を選ぶ
+function pickWithFallback(primary: string, used: Set<string>, fallbacks: string[]): string {
+  if (!used.has(primary)) return primary;
+  for (const fb of fallbacks) {
+    if (!used.has(fb)) return fb;
+  }
+  return primary;
+}
+
+function pickResultImages(answers: Record<string, string>, result?: DiagnosisResult | null) {
+  const used = new Set<string>();
+
+  // タイトルカード: Q3の回答でメインビジュアル
   const heroMap: Record<string, string> = {
     "畑仕事のあと、自分で育てた野菜で食卓を囲む": "/images/tomorokoshi.jpg",
     "蔵の町並みを散歩して、カフェでひと息": "/images/hinamatsuri.jpg",
@@ -38,34 +56,34 @@ function pickResultImages(answers: Record<string, string>) {
     "縁側でお茶を飲みながら、山を眺めてゆっくり": "/images/yamazakura.jpg",
   };
   const hero = heroMap[answers.q3] || "/images/zenkei.jpg";
+  used.add(hero);
 
-  // エリアカード: Q5の回答で使い分ける
-  const areaMap: Record<string, string> = {
-    "きれいな空気と自然が近いこと": "/images/yamazakura.jpg",
-    "ご近所さんと助け合える関係": "/images/gion.jpg",
-    "スーパーや病院が近くにあること": "/images/route50_iwase.jpg",
-    "人目を気にせず静かに暮らせること": "/images/zenkei.jpg",
-  };
-  const area = areaMap[answers.q5] || "/images/zenkei.jpg";
+  // エリアカード: AIの診断結果のエリアテキストから判定
+  const area = result?.area
+    ? pickWithFallback(pickAreaImage(result.area), used, ["/images/zenkei.jpg", "/images/route50_iwase.jpg", "/images/yamato_park.jpg", "/images/hinamatsuri.jpg"])
+    : "/images/zenkei.jpg";
+  used.add(area);
 
   // 暮らし方: Q7の回答で住まいの雰囲気
   const lifestyleMap: Record<string, string> = {
     "古民家・歴史ある建物": "/images/hinamatsuri.jpg",
-    "新築・リノベ住宅": "/images/zenkei.jpg",
-    "まずは賃貸で様子見": "/images/furatto.jpg",
+    "新築・リノベ住宅": "/images/sakuragawa_medical.jpg",
+    "まずは賃貸で様子見": "/images/yuubinkyoku.jpg",
     "二拠点居住": "/images/camp.jpg",
   };
-  const lifestyle = lifestyleMap[answers.q7] || "/images/furatto.jpg";
+  const lifestyle = pickWithFallback(lifestyleMap[answers.q7] || "/images/yuubinkyoku.jpg", used, ["/images/yuubinkyoku.jpg", "/images/zenkei.jpg", "/images/camp.jpg"]);
+  used.add(lifestyle);
 
   // 仕事: Q4の回答に合わせる
   const workMap: Record<string, string> = {
     "リモートワーク継続": "/images/zenkei.jpg",
-    "地元で就職・転職": "/images/yuubinkyoku.jpg",
+    "地元で就職・転職": "/images/route50_iwase.jpg",
     "農業・農的活動": "/images/kodomo_nouka.jpg",
     "起業・副業・フリーランス": "/images/furatto.jpg",
     "引退・年金生活": "/images/jinja.jpg",
   };
-  const work = workMap[answers.q4] || "/images/tomorokoshi.jpg";
+  const work = pickWithFallback(workMap[answers.q4] || "/images/tomorokoshi.jpg", used, ["/images/furatto.jpg", "/images/kodomo_nouka.jpg", "/images/jinja.jpg", "/images/tomorokoshi.jpg"]);
+  used.add(work);
 
   // 楽しみ方: Q8の回答に合わせる
   const activityMap: Record<string, string> = {
@@ -74,7 +92,8 @@ function pickResultImages(answers: Record<string, string>) {
     "ヤマザクラの花見やつくし湖でアウトドア": "/images/camp.jpg",
     "お祭りや地域行事で地元の人と交流": "/images/gion.jpg",
   };
-  const activity = activityMap[answers.q8] || "/images/camp.jpg";
+  const activity = pickWithFallback(activityMap[answers.q8] || "/images/camp.jpg", used, ["/images/gion.jpg", "/images/yasai_taiken.jpg", "/images/camp.jpg", "/images/amebiki.jpg"]);
+  used.add(activity);
 
   // 支援制度: 家族構成に合わせる
   const supportMap: Record<string, string> = {
@@ -83,7 +102,7 @@ function pickResultImages(answers: Record<string, string>) {
     "子どもと一緒に": "/images/yamato_park.jpg",
     "親と一緒に・呼び寄せ": "/images/amebiki.jpg",
   };
-  const support = supportMap[answers.q6] || "/images/furatto.jpg";
+  const support = pickWithFallback(supportMap[answers.q6] || "/images/furatto.jpg", used, ["/images/furatto.jpg", "/images/yamazakura.jpg", "/images/randoseru.jpg"]);
 
   return { hero, area, lifestyle, work, activity, support };
 }
@@ -205,7 +224,7 @@ export default function Home() {
     setError("");
   };
 
-  const images = pickResultImages(answers);
+  const images = pickResultImages(answers, result);
 
   return (
     <div
